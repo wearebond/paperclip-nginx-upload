@@ -76,5 +76,7 @@ module Paperclip
 end
 
 Paperclip.io_adapters.register Paperclip::Nginx::Upload::IOAdapter do |target|
-  Hash === target && [:original_name, :content_type, :tmp_path].all? { |key| target.key?(key) }
+  keys = [:original_name, :content_type, :tmp_path]
+  target = target.permit(keys).to_h if ActionController::Parameters === target
+  Hash === target && keys.all? { |key| target.key?(key) }
 end
